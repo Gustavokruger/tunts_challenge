@@ -1,5 +1,6 @@
 
 // link to the spreadsheet: https://docs.google.com/spreadsheets/d/e/2PACX-1vSg28szyWFh5xWyvDTWo36QCm-4wlkJW3-6MMi-BDfk06eQbfMPbSTB4f1Q6QGKfA37IVcvDVAPq3Pu/pubhtml
+
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 
 const credentials = {
@@ -14,8 +15,12 @@ const credentials = {
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/media-notas%40media-notas.iam.gserviceaccount.com"
 }
+
+// in case of needing to change the spreadsheet for test purposes 
+const spreadsheetId = '1kO7L4EwHtvXf1WV3sTR3avBfqYZehqAnCtgHBPU7s8M'
+
 const accessSheet = async () => {
-    const doc = new GoogleSpreadsheet('1kO7L4EwHtvXf1WV3sTR3avBfqYZehqAnCtgHBPU7s8M')
+    const doc = new GoogleSpreadsheet(spreadsheetId)
     await doc.useServiceAccountAuth(credentials)
     await doc.loadInfo()
     const sheet = doc.sheetsByIndex[0]
@@ -37,7 +42,7 @@ const accessSheet = async () => {
                     row.Situação = 'Reprovado por Falta';
                     row.save();
                     break;
-                case (gradeAverage >= 50 && gradeAverage < 70):
+                case (gradeAverage >= 50 && gradeAverage < config.minGradeAverage):
                     row.Nota_para_Aprovação_Final = (100 - gradeAverage).toFixed(0)
                     row.Situação = 'Exame Final';
                     row.save();
